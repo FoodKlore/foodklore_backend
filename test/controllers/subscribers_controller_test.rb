@@ -12,7 +12,7 @@ class SubscribersControllerTest < ActionDispatch::IntegrationTest
 
   test "should create subscriber" do
     assert_difference('Subscriber.count') do
-      post subscribers_url, params: { subscriber: { created_at: @subscriber.created_at, deleted_at: @subscriber.deleted_at, email: @subscriber.email, name: @subscriber.name, updated_at: @subscriber.updated_at } }, as: :json
+      post subscribers_url, params: { subscriber: { created_at: @subscriber.created_at, email: @subscriber.email, name: @subscriber.name, active: true, updated_at: @subscriber.updated_at } }, as: :json
     end
 
     assert_response 201
@@ -24,15 +24,14 @@ class SubscribersControllerTest < ActionDispatch::IntegrationTest
   end
 
   test "should update subscriber" do
-    patch subscriber_url(@subscriber), params: { subscriber: { created_at: @subscriber.created_at, deleted_at: @subscriber.deleted_at, email: @subscriber.email, name: @subscriber.name, updated_at: @subscriber.updated_at } }, as: :json
+    patch subscriber_url(@subscriber), params: { subscriber: { created_at: @subscriber.created_at, active: true, email: @subscriber.email, name: @subscriber.name, updated_at: @subscriber.updated_at } }, as: :json
     assert_response 200
   end
 
   test "should destroy subscriber" do
-    assert_difference('Subscriber.count', -1) do
+    assert_difference('Subscriber.where(active: true).count', -1) do
       delete subscriber_url(@subscriber), as: :json
     end
-
     assert_response 204
   end
 end
