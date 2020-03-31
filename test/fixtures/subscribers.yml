@@ -6,10 +6,3 @@ one:
   active: true
   created_at: 2020-03-24 22:49:38
   updated_at: 2020-03-24 22:49:38
-
-two:
-  name: MyString
-  email: MyString
-  active: true
-  created_at: 2020-03-24 22:49:38
-  updated_at: 2020-03-24 22:49:38

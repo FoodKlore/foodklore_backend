@@ -16,12 +16,16 @@ class SubscribersController < ApplicationController
   # POST /subscribers
   def create
     @subscriber = Subscriber.new(subscriber_params)
-
-    if @subscriber.save
-      render json: @subscriber, status: :created, location: @subscriber
+    unless Subscriber.find_by(email: @subscriber.email)
+      if @subscriber.save
+        render json: @subscriber, status: :created, location: @subscriber
+      else
+        render json: @subscriber.errors, status: :unprocessable_entity
+      end
     else
-      render json: @subscriber.errors, status: :unprocessable_entity
+      render json: @subscriber, status: :not_modified
     end
+
   end
 
   # PATCH/PUT /subscribers/1
