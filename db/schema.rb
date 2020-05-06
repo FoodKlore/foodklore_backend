@@ -10,10 +10,28 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2020_03_31_011140) do
+ActiveRecord::Schema.define(version: 2020_05_06_021806) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
+
+  create_table "ingredients", force: :cascade do |t|
+    t.text "name"
+    t.bigint "menu_id", null: false
+    t.datetime "created_at", precision: 6, null: false
+    t.datetime "updated_at", precision: 6, null: false
+    t.index ["menu_id"], name: "index_ingredients_on_menu_id"
+  end
+
+  create_table "menus", force: :cascade do |t|
+    t.text "name"
+    t.text "description"
+    t.text "img"
+    t.float "total"
+    t.datetime "created_at", precision: 6, null: false
+    t.datetime "updated_at", precision: 6, null: false
+    t.index ["name"], name: "index_menus_on_name"
+  end
 
   create_table "subscribers", force: :cascade do |t|
     t.string "name"
@@ -26,4 +44,5 @@ ActiveRecord::Schema.define(version: 2020_03_31_011140) do
     t.index ["updated_at"], name: "index_subscribers_on_updated_at"
   end
 
+  add_foreign_key "ingredients", "menus"
 end
