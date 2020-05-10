@@ -1,0 +1,15 @@
+# Read about fixtures at https://api.rubyonrails.org/classes/ActiveRecord/FixtureSet.html
+
+one:
+  business_name: MyText
+  phone_number: MyText
+  direction: MyText
+  business_description: MyText
+  img: MyText
+
+two:
+  business_name: MyText
+  phone_number: MyText
+  direction: MyText
+  business_description: MyText
+  img: MyText
