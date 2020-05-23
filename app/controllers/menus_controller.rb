@@ -8,7 +8,9 @@ class MenusController < ApplicationController
   end
 
   def show
-    render json: @menu
+    @menu_with_ingredients = @menu.as_json
+    @menu_with_ingredients[:ingredients] = @menu.ingredients
+    render json: @menu_with_ingredients
   end
 
   def create
@@ -43,6 +45,8 @@ class MenusController < ApplicationController
     end
 
     def menu_params
-      params.require(:menu).permit(:name, :description, :img, :total, :created_at, :updated_at)
+      params.require(:menu).permit(
+        :name, :description, :img, :total, :created_at, :updated_at, :business_id
+      )
     end
 end

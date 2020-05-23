@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2020_05_07_012004) do
+ActiveRecord::Schema.define(version: 2020_05_23_144303) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -40,7 +40,39 @@ ActiveRecord::Schema.define(version: 2020_05_07_012004) do
     t.float "total"
     t.datetime "created_at", precision: 6, null: false
     t.datetime "updated_at", precision: 6, null: false
+    t.integer "business_id"
     t.index ["name"], name: "index_menus_on_name"
+  end
+
+  create_table "order_statuses", force: :cascade do |t|
+    t.string "status"
+    t.datetime "created_at", precision: 6, null: false
+    t.datetime "updated_at", precision: 6, null: false
+  end
+
+  create_table "orders", force: :cascade do |t|
+    t.float "total"
+    t.bigint "order_status_id", null: false
+    t.datetime "created_at", precision: 6, null: false
+    t.datetime "updated_at", precision: 6, null: false
+    t.bigint "shoppingcart_id"
+    t.index ["order_status_id"], name: "index_orders_on_order_status_id"
+    t.index ["shoppingcart_id"], name: "index_orders_on_shoppingcart_id"
+  end
+
+  create_table "shoppingcart_items", force: :cascade do |t|
+    t.bigint "shoppingcart_id", null: false
+    t.bigint "menu_id", null: false
+    t.integer "quantity"
+    t.datetime "created_at", precision: 6, null: false
+    t.datetime "updated_at", precision: 6, null: false
+    t.index ["menu_id"], name: "index_shoppingcart_items_on_menu_id"
+    t.index ["shoppingcart_id"], name: "index_shoppingcart_items_on_shoppingcart_id"
+  end
+
+  create_table "shoppingcarts", force: :cascade do |t|
+    t.datetime "created_at", precision: 6, null: false
+    t.datetime "updated_at", precision: 6, null: false
   end
 
   create_table "subscribers", force: :cascade do |t|
@@ -55,4 +87,9 @@ ActiveRecord::Schema.define(version: 2020_05_07_012004) do
   end
 
   add_foreign_key "ingredients", "menus"
+  add_foreign_key "menus", "businesses"
+  add_foreign_key "orders", "order_statuses"
+  add_foreign_key "orders", "shoppingcarts"
+  add_foreign_key "shoppingcart_items", "menus"
+  add_foreign_key "shoppingcart_items", "shoppingcarts"
 end

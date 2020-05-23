@@ -1,5 +1,5 @@
 class BusinessesController < ApplicationController
-  before_action :set_business, only: [:show, :update, :destroy]
+  before_action :set_business, only: [:show, :update, :destroy, :menus]
 
   def index
     @businesses = Business.all
@@ -25,6 +25,15 @@ class BusinessesController < ApplicationController
     else
       render json: @business.errors, status: :unprocessable_entity
     end
+  end
+
+  def menus
+    # @menu_with_ingredients[:ingredients] = @menu_with_ingredients.ingredients.as_json
+    # render json: @business.menus.includes(:ingredients).load_records
+    # @business.menus.includes()
+    render json: @business.menus.to_json(:include => :ingredients)
+    # render :json => @business.menus, :include => {:ingredients}, :except [:created_at]
+
   end
 
   private
