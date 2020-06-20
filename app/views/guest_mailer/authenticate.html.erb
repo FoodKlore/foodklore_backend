@@ -11,7 +11,8 @@
         your security code is: <%= @security_code %>.<br>
     </p>
     <p>
-        To confirm this is you, please click this link: <%= guest_authenticate_url(SecureRandom.urlsafe_base64.to_s) %>.
+        To confirm this is you, please click this link: <%= link_to "Authenticate", authenticate_guest_url(@guest.guest_token, Rails.application.credentials.secret_key_base) %>.
+
     </p>
     <p>Thanks for joining and have a great day!</p>
     </body>

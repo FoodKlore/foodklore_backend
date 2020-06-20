@@ -36,11 +36,11 @@ Rails.application.configure do
   config.action_mailer.delivery_method = :smtp
 
   config.action_mailer.smtp_settings = {
-    :user_name => '7972021b7882ef',
-    :password => 'd5cf195e70f008',
-    :address => 'smtp.mailtrap.io',
-    :domain => 'smtp.mailtrap.io',
-    :port => '2525',
+    :user_name => Rails.application.credentials.mail_trap[:user_name],
+    :password => Rails.application.credentials.mail_trap[:password],
+    :address => Rails.application.credentials.mail_trap[:address],
+    :domain => Rails.application.credentials.mail_trap[:domain],
+    :port => Rails.application.credentials.mail_trap[:port],
     :authentication => :cram_md5
   }
 
@@ -60,4 +60,7 @@ Rails.application.configure do
   # Use an evented file watcher to asynchronously detect changes in source code,
   # routes, locales, etc. This feature depends on the listen gem.
   config.file_watcher = ActiveSupport::EventedFileUpdateChecker
+
+  config.action_mailer.default_url_options = { :host => "localhost:3000" }
+
 end
