@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2020_05_23_144303) do
+ActiveRecord::Schema.define(version: 2020_06_17_224546) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -23,6 +23,15 @@ ActiveRecord::Schema.define(version: 2020_05_23_144303) do
     t.text "img"
     t.datetime "created_at", precision: 6, null: false
     t.datetime "updated_at", precision: 6, null: false
+  end
+
+  create_table "guests", force: :cascade do |t|
+    t.string "email"
+    t.boolean "authenticated"
+    t.string "name"
+    t.datetime "created_at", precision: 6, null: false
+    t.datetime "updated_at", precision: 6, null: false
+    t.string "security_code_digest"
   end
 
   create_table "ingredients", force: :cascade do |t|
@@ -84,6 +93,16 @@ ActiveRecord::Schema.define(version: 2020_05_23_144303) do
     t.index ["created_at"], name: "index_subscribers_on_created_at"
     t.index ["email"], name: "index_subscribers_on_email", unique: true
     t.index ["updated_at"], name: "index_subscribers_on_updated_at"
+  end
+
+  create_table "users", force: :cascade do |t|
+    t.string "username"
+    t.string "email"
+    t.string "password_digest"
+    t.string "nickname"
+    t.datetime "created_at", precision: 6, null: false
+    t.datetime "updated_at", precision: 6, null: false
+    t.boolean "email_confirmed", default: false
   end
 
   add_foreign_key "ingredients", "menus"

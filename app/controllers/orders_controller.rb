@@ -5,7 +5,7 @@ class OrdersController < ApplicationController
   def index
     @orders = Order.all
 
-    render json: @orders
+    render json: @orders.as_json(include: :order_status)
   end
 
   # GET /orders/1
@@ -48,6 +48,6 @@ class OrdersController < ApplicationController
 
     # Only allow a trusted parameter "white list" through.
     def order_params
-      params.require(:order).permit(:total, :order_status_id)
+      params.require(:order).permit(:total, :shoppingcart_id, :order_status_id)
     end
 end
