@@ -22,8 +22,9 @@ class GuestsController < ApplicationController
         @guest.security_code = security_code
         if @guest.save
             # dispatch job sending an email
-            GuestMailer.with(guest: @guest, security_code: nil).authenticate.deliver_later
+            GuestMailer.with(guest: @guest, security_code: security_code).authenticate.deliver_later
             # TODO: FE will then shows a "paste your security code here"
+            # This will be the password
             render json: @guest, status: :created, location: @guest
         else
             render json: @guest.errors, status: :unprocessable_entity
