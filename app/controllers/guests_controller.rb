@@ -22,7 +22,15 @@ class GuestsController < ApplicationController
         @guest.security_code = security_code
         if @guest.save
             # dispatch job sending an email
-            GuestMailer.with(guest: @guest, security_code: security_code).authenticate.deliver_later
+            key   = ActiveSupport::KeyGenerator.new(Rails.application.credentials.token[:password]).generate_key(Rails.application.credentials.token[:salt], 32)
+            crypt = ActiveSupport::MessageEncryptor.new(key)
+            payload = {
+                :token => Rails.application.credentials.secret_key_base,
+                :guest_token => @guest.guest_token,
+            }
+            encrypted_data = crypt.encrypt_and_sign(ActiveSupport::JSON.encode(payload))
+
+            GuestMailer.with(guest: @guest, security_code: security_code, token: encrypted_data).authenticate.deliver_later
             # TODO: FE will then shows a "paste your security code here"
             # This will be the password
             render json: @guest, status: :created, location: @guest
@@ -74,11 +82,16 @@ class GuestsController < ApplicationController
     def authenticate_params
         # Send encripted security code
         # TODO: A single token will be passed and we need to decrypte it and separete it into token and guest token
-        if params[:token] != Rails.application.credentials.secret_key_base
-            render json: ["Invalid application token"], status: :unprocessable_entity
+        key   = ActiveSupport::KeyGenerator.new(Rails.application.credentials.token[:password]).generate_key(Rails.application.credentials.token[:salt], 32)
+        crypt = ActiveSupport::MessageEncryptor.new(key)
+        # encrypted_data = crypt.decrypt_and_verify('my secret data')
+        token = ActiveSupport::JSON.decode(crypt.decrypt_and_verify(params[:token]))
+
+        if token["token"] != Rails.application.credentials.secret_key_base
+            render json: ["Tokens dont match"], status: :unprocessable_entity
             return nil
         else
-            return params[:guest_token]
+            return token["guest_token"]
         end
     end
 end

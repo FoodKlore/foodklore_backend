@@ -4,6 +4,9 @@ Welcome to example.com, <%= @guest.name %>
 You have successfully signed up to example.com,
 your security code is: <%= @security_code %>.
 
-To confirm this is you, please click this link: <%= @url %>.
+you will need this security code every time you want to log into this guest account.
+We will not store payment information. If you want the full experience, please create an account here.
+
+To confirm this is you, please click this link: <%= link_to "Authenticate", authenticate_guest_url(@token) %>.
 
 Thanks for joining and have a great day!
