@@ -80,11 +80,8 @@ class GuestsController < ApplicationController
     end
 
     def authenticate_params
-        # Send encripted security code
-        # TODO: A single token will be passed and we need to decrypte it and separete it into token and guest token
         key   = ActiveSupport::KeyGenerator.new(Rails.application.credentials.token[:password]).generate_key(Rails.application.credentials.token[:salt], 32)
         crypt = ActiveSupport::MessageEncryptor.new(key)
-        # encrypted_data = crypt.decrypt_and_verify('my secret data')
         token = ActiveSupport::JSON.decode(crypt.decrypt_and_verify(params[:token]))
 
         if token["token"] != Rails.application.credentials.secret_key_base

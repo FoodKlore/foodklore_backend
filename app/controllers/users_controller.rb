@@ -23,13 +23,17 @@ class UsersController < ApplicationController
     end
 
     def create
-        # I could also do
-        # SecureRandom.random_number(9e5).to_i
-        # To validate email
         user = User.new(user_params)
 
         if user.save
-            UserMailer.with(user: user).authenticate.deliver_later
+            key   = ActiveSupport::KeyGenerator.new(Rails.application.credentials.token[:password]).generate_key(Rails.application.credentials.token[:salt], 32)
+            crypt = ActiveSupport::MessageEncryptor.new(key)
+            payload = {
+                :token => Rails.application.credentials.secret_key_base,
+                :user_token => user.user_token,
+            }
+            encrypted_data = crypt.encrypt_and_sign(ActiveSupport::JSON.encode(payload))
+            UserMailer.with(user: user, user_token: encrypted_data).authenticate.deliver_later
             render json: user, status: :created
         else
             render json: user.errors, status: :unprocessable_entity
@@ -47,13 +51,15 @@ class UsersController < ApplicationController
     end
 
     def authenticate_params
-        # Send encripted security code
-        # TODO: A single token will be passed and we need to decrypte it and separete it into token and guest token
-        if params[:token] != Rails.application.credentials.secret_key_base
-            render json: ["Invalid application token"], status: :unprocessable_entity
+        key   = ActiveSupport::KeyGenerator.new(Rails.application.credentials.token[:password]).generate_key(Rails.application.credentials.token[:salt], 32)
+        crypt = ActiveSupport::MessageEncryptor.new(key)
+        token = ActiveSupport::JSON.decode(crypt.decrypt_and_verify(params[:token]))
+
+        if token["token"] != Rails.application.credentials.secret_key_base
+            render json: ["Tokens dont match"], status: :unprocessable_entity
             return nil
         else
-            return params[:user_token]
+            return token["user_token"]
         end
     end
 end
