@@ -1,33 +1,60 @@
+# frozen_string_literal: true
+
+# Handles all user requests
 class UsersController < ApplicationController
+  before_action :set_user, only: %i[edit update show destroy]
 
-    before_action :set_user, only: [:edit, :update, :show, :destroy]
+  def index
+    @users = User.all
+    render json: @users
+  end
 
-    def index
-        @users = User.all
-        render json: @users
+  def authenticate
+    return unless authenticate_params
+
+    user = User.where(user_token: authenticate_params).first
+    return render json: ['Not found'], status: 404 unless user
+
+    user.email_confirmed = true
+    unless user.save
+      return render json: ['Unprocessable entity'], status: :unprocessable_entity
     end
 
-    def create
-        # I could also do
-        # SecureRandom.random_number(9e5).to_i
-        # To validate email
-        end
-        user = User.new(user_params)
+    render json: user, status: :ok
+  end
 
-        if user.save
-            render json: user, status: :created
-        else
-            render json: user.errors, status: :unprocessable_entity
-        end
+  def create
+    user = User.new(user_params)
+    if user.save
+      encrypted_data = encode_message ActiveSupport::JSON.encode(
+        user_token: user.user_token
+      )
+      UserMailer.with(
+        user: user, user_token: encrypted_data
+      ).authenticate.deliver_later
+      render json: user, status: :created
+    else
+      render json: user.errors, status: :unprocessable_entity
+    end
+  end
+
+  private
+
+  def user_params
+    params.require(:user).permit(:email, :password, :username, :nickname)
+  end
+
+  def set_user
+    User.find_by_email(user_params[:email])
+  end
+
+  def authenticate_params
+    token = decrypte_message params[:token]
+    unless token['token'] != Rails.application.credentials.secret_key_base
+      return token['user_token']
     end
 
-    private
-
-    def user_params
-        params.require(:user).permit(:email, :password, :username, :nickname)
-    end
-
-    def set_user
-        User.find_by_email(user_params[:email])
-    end
+    render json: ['Tokens dont match'], status: :unprocessable_entity
+    nil
+  end
 end

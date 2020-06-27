@@ -1,4 +1,3 @@
-
 <!DOCTYPE html>
 <html>
     <head>
@@ -9,9 +8,11 @@
     <p>
         You have successfully signed up to example.com,
         your security code is: <%= @security_code %>.<br>
+        you will need this security code every time you want to log into this guest account.
+        We will not store payment information. If you want the full experience, please create an account here.
     </p>
     <p>
-        To confirm this is you, please click this link: <%= guest_authenticate_url(SecureRandom.urlsafe_base64.to_s) %>.
+        To confirm this is you, please click this link: <%= link_to "Authenticate", authenticate_guest_url(@token) %>.
     </p>
     <p>Thanks for joining and have a great day!</p>
     </body>

@@ -17,8 +17,8 @@
 default: &default
   adapter: postgresql
   encoding: unicode
-  username: <%= ENV['DBUSER'] %>
-  password: <%= ENV['DBPASSWORD'] %>
+  username: <%= Rails.application.credentials.database[:dbuser] %>
+  password: <%= Rails.application.credentials.database[:dbpassword] %>
   # For details on connection pooling, see Rails configuration guide
   # https://guides.rubyonrails.org/configuring.html#database-pooling
   pool: <%= ENV.fetch("RAILS_MAX_THREADS") { 5 } %>

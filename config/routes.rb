@@ -1,7 +1,10 @@
 Rails.application.routes.draw do
-  resources :guests do
-    get :authenticate
-  end
+  resources :guests
+
+  get '/authenticate/guest/:token', to: 'guests#authenticate', as: 'authenticate_guest'
+
+  get '/authenticate/user/:token', to: 'users#authenticate', as: 'authenticate_user'
+
   resources :users
   resources :shoppingcart_items
   resources :orders

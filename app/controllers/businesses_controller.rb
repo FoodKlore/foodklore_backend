@@ -1,5 +1,8 @@
+# frozen_string_literal: true
+
+# Class handles all request for restaurants => We consider restaurants as business
 class BusinessesController < ApplicationController
-  before_action :set_business, only: [:show, :update, :destroy, :menus]
+  before_action :set_business, only: %i[show update destroy menus]
 
   def index
     @businesses = Business.all
@@ -28,26 +31,22 @@ class BusinessesController < ApplicationController
   end
 
   def menus
-    # @menu_with_ingredients[:ingredients] = @menu_with_ingredients.ingredients.as_json
-    # render json: @business.menus.includes(:ingredients).load_records
-    # @business.menus.includes()
-    render json: @business.menus.to_json(:include => :ingredients)
-    # render :json => @business.menus, :include => {:ingredients}, :except [:created_at]
-
+    render json: @business.menus.to_json(include: :ingredients)
   end
 
   private
-    def set_business
-      @business = Business.find(params[:id])
-    end
 
-    def business_params
-      params.require(:business).permit(
-        :business_name,
-        :phone_number,
-        :direction,
-        :business_description,
-        :img
-      )
-    end
+  def set_business
+    @business = Business.find(params[:id])
+  end
+
+  def business_params
+    params.require(:business).permit(
+      :business_name,
+      :phone_number,
+      :direction,
+      :business_description,
+      :img
+    )
+  end
 end

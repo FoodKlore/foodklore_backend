@@ -1,12 +1,21 @@
+# frozen_string_literal: true
+
+# Handles shopping cart
 class ShoppingcartController < ApplicationController
-  before_action :set_shoppingcart, only: [:update, :show, :destroy]
+  before_action :set_shoppingcart, only: %i[update show destroy]
 
   def index
     # Get last shopping cart which order hasn't been processed or hasn't been cancelled
-    render json: Shoppingcart.left_outer_joins(:orders).where("orders.id": nil).as_json(include: { shoppingcart_items: {
-      include: :menu
-      }})[0]
-    # TODO: I previously added .or(Shoppingcart.left_outer_joins(:orders).where("orders.order_status_id": OrderStatus::PENDING)), this could be used if we want them to have the ability to add/edit to an existing order that hasn't been proccessed
+    render json: Shoppingcart.left_outer_joins(:orders)
+                             .where("orders.id": nil).as_json(
+                               include: { shoppingcart_items: {
+                                 include: :menu
+                               } }
+                             )[0]
+    # TODO: I previously added .or(Shoppingcart.left_outer_joins(:orders)
+    # .where("orders.order_status_id": OrderStatus::PENDING)),
+    # this could be used if we want them to have the ability to add/edit to an
+    # existing order that hasn't been proccessed
   end
 
   def create

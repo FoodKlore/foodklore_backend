@@ -1,5 +1,8 @@
+# frozen_string_literal: true
+
+# Handles shoppingcart's item requests
 class ShoppingcartItemsController < ApplicationController
-  before_action :set_shoppingcart_item, only: [:show, :update, :destroy]
+  before_action :set_shoppingcart_item, only: %i[show update destroy]
 
   # GET /shoppingcart_items
   def index
@@ -39,13 +42,16 @@ class ShoppingcartItemsController < ApplicationController
   end
 
   private
-    # Use callbacks to share common setup or constraints between actions.
-    def set_shoppingcart_item
-      @shoppingcart_item = ShoppingcartItem.find(params[:id])
-    end
 
-    # Only allow a trusted parameter "white list" through.
-    def shoppingcart_item_params
-      params.require(:shoppingcart_item).permit(:shoppingcart_id, :menu_id, :quantity)
-    end
+  # Use callbacks to share common setup or constraints between actions.
+  def set_shoppingcart_item
+    @shoppingcart_item = ShoppingcartItem.find(params[:id])
+  end
+
+  # Only allow a trusted parameter "white list" through.
+  def shoppingcart_item_params
+    params.require(:shoppingcart_item).permit(
+      :shoppingcart_id, :menu_id, :quantity
+    )
+  end
 end
