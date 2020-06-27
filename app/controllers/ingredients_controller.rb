@@ -1,5 +1,8 @@
+# frozen_string_literal: true
+
+# Handles ingredients request
 class IngredientsController < ApplicationController
-  before_action :set_ingredient, only: [:show, :update, :destroy]
+  before_action :set_ingredient, only: %i[show update destroy]
 
   def index
     @ingredients = Ingredient.all
@@ -28,15 +31,15 @@ class IngredientsController < ApplicationController
     end
   end
 
-  def destroy
-  end
+  def destroy; end
 
   private
-    def set_ingredient
-      @ingredient = Ingredient.find(params[:id])
-    end
 
-    def ingredient_params
-      params.require(:ingredient).permit(:name, :menu_id)
-    end
+  def set_ingredient
+    @ingredient = Ingredient.find(params[:id])
+  end
+
+  def ingredient_params
+    params.require(:ingredient).permit(:name, :menu_id)
+  end
 end
