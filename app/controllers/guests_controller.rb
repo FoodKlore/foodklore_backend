@@ -22,9 +22,7 @@ class GuestsController < ApplicationController
     security_code = SecureRandom.random_number(9e5).to_i.to_s # .to_s is needed for secure password
     @guest.security_code = security_code
     if @guest.save
-      encrypted_data = encode_message ActiveSupport::JSON.encode(
-        guest_token: @guest.guest_token
-      )
+      encrypted_data = encode_message @guest.guest_token
       GuestMailer.with(guest: @guest, security_code: security_code,
                        token: encrypted_data).authenticate.deliver_later
       render json: @guest, status: :created, location: @guest
@@ -74,7 +72,7 @@ class GuestsController < ApplicationController
   def authenticate_params
     token = decrypte_message params[:token]
     unless token['token'] != Rails.application.credentials.secret_key_base
-      return token['guest_token']
+      return token['entity_token']
     end
 
     render json: ['Tokens dont match'], status: :unprocessable_entity

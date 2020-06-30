@@ -23,15 +23,23 @@ class ApplicationController < ActionController::API
   end
 
   def http_auth_header
-    if request.headers['Authorization'].present?
+    if check_auth_header
       request.headers['Authorization'].split(' ').last
     else
       render json: 'Missing Token', status: :unprocessable_entity
     end
   end
 
-  def encode_message(payload)
-    payload["token"] = Rails.application.credentials.secret_key_base
+  def check_auth_header
+    request.headers['Authorization'].present?
+  end
+
+  def encode_message(entity_token)
+    payload = {
+      token: Rails.application.credentials.secret_key_base,
+      entity_token: entity_token
+    }
+
     crypt = ActiveSupport::MessageEncryptor.new generate_key
     crypt.encrypt_and_sign(ActiveSupport::JSON.encode(payload))
   end

@@ -43,6 +43,9 @@ class ShoppingcartController < ApplicationController
   end
 
   def shoppingcart_params
-    params.require(:shoppingcart).permit(:authenticable)
+    # TODO: Change this when neccesary.
+    # params.require(:shoppingcart).permit
+    {}
+    # .permit(:authenticable)
   end
 end

@@ -21,7 +21,7 @@ class ShoppingcartItemsController < ApplicationController
     @shoppingcart_item = ShoppingcartItem.new(shoppingcart_item_params)
 
     if @shoppingcart_item.save
-      render json: @shoppingcart_item.as_json(include: :menu), status: :created, location: @shoppingcart_item
+      render json: @shoppingcart_item.as_json(include: :menu), status: :created
     else
       render json: @shoppingcart_item.errors, status: :unprocessable_entity
     end

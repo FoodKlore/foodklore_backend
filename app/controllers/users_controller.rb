@@ -26,9 +26,7 @@ class UsersController < ApplicationController
   def create
     user = User.new(user_params)
     if user.save
-      encrypted_data = encode_message ActiveSupport::JSON.encode(
-        user_token: user.user_token
-      )
+      encrypted_data = encode_message user.user_token
       UserMailer.with(
         user: user, user_token: encrypted_data
       ).authenticate.deliver_later
@@ -51,7 +49,7 @@ class UsersController < ApplicationController
   def authenticate_params
     token = decrypte_message params[:token]
     unless token['token'] != Rails.application.credentials.secret_key_base
-      return token['user_token']
+      return token['entity_token']
     end
 
     render json: ['Tokens dont match'], status: :unprocessable_entity
