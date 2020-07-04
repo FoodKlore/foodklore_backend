@@ -3,6 +3,7 @@
 # Handles order requests
 class OrdersController < ApplicationController
   before_action :set_order, only: %i[show update destroy]
+  before_action :authorize_entity
 
   # GET /orders
   def index
@@ -20,13 +21,13 @@ class OrdersController < ApplicationController
   def create
     @order = Order.new(order_params)
     @order.order_status_id = OrderStatus::PENDING
-    logger.debug(@order.inspect)
 
     if @order.save
       render json: @order, status: :created, location: @order
     else
       render json: @order.errors, status: :unprocessable_entity
     end
+    render json: authorize_entity
   end
 
   # PATCH/PUT /orders/1

@@ -3,18 +3,22 @@
 # Handles application request
 class ApplicationController < ActionController::API
   def authorize_entity
-    # return true
     if decoded_auth_token
       @entity = if decoded_auth_token[:entity] == 'User'
                   User.find(decoded_auth_token[:auth_entity_id])
                 else
                   Guest.find(decoded_auth_token[:auth_entity_id])
                 end
-      return @entity if @entity
+      return {
+        response: true,
+        entity: @entity
+      } if @entity
 
-      render json: 'Not found', status: 404
+      raise ActionController::RoutingError.new('Not Found')
     else
-      render json: 'Invalid token', status: :unprocessable_entity
+      # BadRequest, InvalidAuthenticityToken, InvalidCrossOriginRequest, MethodNotAllowed, MissingFile, RenderError, RoutingError, SessionOverflowError, UnknownController, UnknownFormat, UnknownHttpMethod
+      # 656444
+      raise ActionController::InvalidAuthenticityToken.new
     end
   end
 
@@ -39,6 +43,10 @@ class ApplicationController < ActionController::API
   def decrypte_message(token)
     crypt = ActiveSupport::MessageEncryptor.new generate_key
     ActiveSupport::JSON.decode(crypt.decrypt_and_verify(token))
+  end
+
+  def checkout_params
+    params.require(:checkout).permit(:email, :name)
   end
 
   private

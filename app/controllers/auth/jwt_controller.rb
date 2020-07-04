@@ -1,8 +1,7 @@
 
 module Auth
     class JwtController < ApplicationController
-        before_action :authorize_entity, except: :create
-
+        before_action :authorize_entity
         def create
             @auth_entity = auth_entity
             if @auth_entity.is_a? User
@@ -21,7 +20,11 @@ module Auth
         end
 
         def is_logged_in?
-            render json: authorize_entity
+            if authorize_entity[:response]
+                render json: authorize_entity[:entity]
+            end
+
+            render json: @entity
         end
 
         private

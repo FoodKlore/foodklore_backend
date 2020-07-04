@@ -26,9 +26,7 @@ class UsersController < ApplicationController
   def create
     user = User.new(user_params)
     if user.save
-      encrypted_data = encode_message ActiveSupport::JSON.encode(
-        user_token: user.user_token
-      )
+      encrypted_data = encode_message({ user_token: user.user_token })
       UserMailer.with(
         user: user, user_token: encrypted_data
       ).authenticate.deliver_later

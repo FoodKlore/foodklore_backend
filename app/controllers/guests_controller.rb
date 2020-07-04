@@ -22,9 +22,7 @@ class GuestsController < ApplicationController
     security_code = SecureRandom.random_number(9e5).to_i.to_s # .to_s is needed for secure password
     @guest.security_code = security_code
     if @guest.save
-      encrypted_data = encode_message ActiveSupport::JSON.encode(
-        guest_token: @guest.guest_token
-      )
+      encrypted_data = encode_message({ guest_token: @guest.guest_token })
       GuestMailer.with(guest: @guest, security_code: security_code,
                        token: encrypted_data).authenticate.deliver_later
       render json: @guest, status: :created, location: @guest
