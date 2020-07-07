@@ -86,7 +86,7 @@ test:
 #
 production:
   <<: *default
-  host: localhost
+  host: <%= ENV['DB_HOST'] %>
   username: <%= ENV['DB_USERNAME'] %>
   password: <%= ENV['DB_PASSWORD'] %>
   database: foodklore_backend_production
