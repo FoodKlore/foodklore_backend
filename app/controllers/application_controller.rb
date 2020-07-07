@@ -18,7 +18,7 @@ class ApplicationController < ActionController::API
     else
       # BadRequest, InvalidAuthenticityToken, InvalidCrossOriginRequest, MethodNotAllowed, MissingFile, RenderError, RoutingError, SessionOverflowError, UnknownController, UnknownFormat, UnknownHttpMethod
       # 656444
-      raise ActionController::InvalidAuthenticityToken.new
+      raise ActionController::InvalidAuthenticityToken.new("Missing Token")
     end
   end
 

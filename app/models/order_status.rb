@@ -1,8 +1,8 @@
 class OrderStatus < ApplicationRecord
   has_many :orders
 
-  PENDING = 2
-  CANCELLED = 3
-  PROCESSED = 4
+  PENDING = 1
+  CANCELLED = 2
+  PROCESSED = 3
 
 end

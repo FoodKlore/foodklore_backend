@@ -1,7 +1,8 @@
 
 module Auth
     class JwtController < ApplicationController
-        before_action :authorize_entity
+        before_action :authorize_entity, except: :create
+
         def create
             @auth_entity = auth_entity
             if @auth_entity.is_a? User

@@ -21,13 +21,17 @@ class OrdersController < ApplicationController
   def create
     @order = Order.new(order_params)
     @order.order_status_id = OrderStatus::PENDING
-
+    print("\n")
+    print("\n")
+    print(@order.order_status)
+    print("\n")
+    print("\n")
     if @order.save
-      render json: @order, status: :created, location: @order
+      return render json: @order, status: :created, location: @order
     else
-      render json: @order.errors, status: :unprocessable_entity
+      return render json: @order.errors, status: :unprocessable_entity
     end
-    render json: authorize_entity
+    return render json: authorize_entity
   end
 
   # PATCH/PUT /orders/1
@@ -53,6 +57,6 @@ class OrdersController < ApplicationController
 
   # Only allow a trusted parameter "white list" through.
   def order_params
-    params.require(:order).permit(:total, :shoppingcart_id, :order_status_id)
+    params.require(:order).permit(:total, :shoppingcart_id)
   end
 end
