@@ -24,9 +24,9 @@ default: &default
 development:
   <<: *default
   host: localhost
-  # username: <%= Rails.application.credentials.database[:dbuser] %>
-  # password: <%= Rails.application.credentials.database[:dbpassword] %>
-  # database: foodklore_backend_development
+  username: <%= Rails.application.credentials.database[:dbuser] %>
+  password: <%= Rails.application.credentials.database[:dbpassword] %>
+  database: foodklore_backend_development
 
   # The specified database role being used to connect to postgres.
   # To create additional roles in postgres see `$ createuser --help`.
@@ -61,9 +61,9 @@ development:
 test:
   <<: *default
   host: localhost
-  # username: <%= Rails.application.credentials.database[:dbuser] %>
-  # password: <%= Rails.application.credentials.database[:dbpassword] %>
-  # database: foodklore_backend_test
+  username: <%= Rails.application.credentials.database[:dbuser] %>
+  password: <%= Rails.application.credentials.database[:dbpassword] %>
+  database: foodklore_backend_test
 
 # As with config/credentials.yml, you never want to store sensitive information,
 # like your database password, in your source code. If your source code is
@@ -85,4 +85,5 @@ test:
 #     url: <%= ENV['DATABASE_URL'] %>
 #
 production:
+  <<: *default
   url: <%= ENV['DATABASE_URL'] %>
