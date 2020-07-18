@@ -6,6 +6,10 @@ module Auth
         def create
             @auth_entity = auth_entity
             if @auth_entity.is_a? User
+                unless @auth_entity.email_confirmed?
+                    # raise ActionController::BadRequest.new("Email hasn't been confirmed yet, please check your mailbox")
+                    return render json: { error: "Your email hasn't been confirmed yet, please check your mailbox"}, status: :unprocessable_entity
+                end
                 token = JsonWebToken.encode(auth_entity_id: @auth_entity.id, entity: 'User')
                 render json: { token: token }, status: :ok
             elsif @auth_entity.is_a? Guest
@@ -21,17 +25,25 @@ module Auth
         end
 
         def is_logged_in?
-            if authorize_entity[:response]
-                render json: authorize_entity[:entity]
+            unless purchase_params.blank?
+                encrypted_data = encode_message(purchase_params)
+                return render json: {
+                    entity: @entity,
+                    payload: encrypted_data
+                }
             end
 
-            render json: @entity
+            return render json: @entity
         end
 
         private
 
         def jwt_params
             params.require(:auth_entity).permit(:username, :authenticable, :password)
+        end
+
+        def purchase_params
+            params.fetch(:order, {}).permit(:total, :shoppingcart_id)
         end
 
         def auth_entity

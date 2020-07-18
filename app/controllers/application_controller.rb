@@ -18,7 +18,7 @@ class ApplicationController < ActionController::API
     else
       # BadRequest, InvalidAuthenticityToken, InvalidCrossOriginRequest, MethodNotAllowed, MissingFile, RenderError, RoutingError, SessionOverflowError, UnknownController, UnknownFormat, UnknownHttpMethod
       # 656444
-      raise ActionController::InvalidAuthenticityToken.new("Missing Token")
+      raise ActionController::InvalidAuthenticityToken.new("Invalid Token")
     end
   end
 
@@ -30,7 +30,7 @@ class ApplicationController < ActionController::API
     if request.headers['Authorization'].present?
       request.headers['Authorization'].split(' ').last
     else
-      render json: 'Missing Token', status: :unprocessable_entity
+      raise ActionController::InvalidAuthenticityToken.new("Missing Token")
     end
   end
 
