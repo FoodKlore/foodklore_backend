@@ -23,8 +23,9 @@ class GuestsController < ApplicationController
     @guest.security_code = security_code
     if @guest.save
       encrypted_data = encode_message({ guest_token: @guest.guest_token })
-      GuestMailer.with(guest: @guest, security_code: security_code,
-                       token: encrypted_data).authenticate.deliver_later
+      GuestMailer.with(
+        guest: @guest, security_code: security_code, token: encrypted_data, redirect_url: redirectUrl_params[:path]
+      ).authenticate.deliver_later
       render json: @guest, status: :created, location: @guest
     else
       render json: @guest.errors, status: :unprocessable_entity

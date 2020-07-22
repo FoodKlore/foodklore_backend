@@ -28,7 +28,7 @@ class UsersController < ApplicationController
     if user.save
       encrypted_data = encode_message({ user_token: user.user_token })
       UserMailer.with(
-        user: user, user_token: encrypted_data
+        user: user, user_token: encrypted_data, redirect_url: redirectUrl_params[:path]
       ).authenticate.deliver_later
       render json: user, status: :created
     else

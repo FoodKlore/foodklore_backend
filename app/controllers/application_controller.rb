@@ -49,6 +49,10 @@ class ApplicationController < ActionController::API
     params.require(:checkout).permit(:email, :name)
   end
 
+  def redirectUrl_params
+    params.require(:redirectUrl).permit(:path)
+  end
+
   private
 
   def generate_key
