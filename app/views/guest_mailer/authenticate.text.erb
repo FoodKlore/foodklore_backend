@@ -7,6 +7,6 @@ your security code is: <%= @security_code %>.
 you will need this security code every time you want to log into this guest account.
 We will not store payment information. If you want the full experience, please create an account here.
 
-To confirm this is you, please click this link: <%= "#{@redirect_path}/?token=#{@token}" %>.
+To confirm this is you, please click this link: <%= "#{@redirect_path}/guest?token=#{@token}" %>.
 
 Thanks for joining and have a great day!

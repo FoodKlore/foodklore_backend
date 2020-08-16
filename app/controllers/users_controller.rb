@@ -47,7 +47,8 @@ class UsersController < ApplicationController
   end
 
   def authenticate_params
-    token = decrypte_message params[:token]
+    token = CGI.unescape params[:token]
+    token = decrypte_message token
     unless token['token'] != Rails.application.credentials.secret_key_base
       return token['user_token']
     end
